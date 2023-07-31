@@ -70,7 +70,7 @@ fun TestButton(modifier: Modifier = Modifier) {
         )
 
         TextButton(
-            onClick = {},
+            onClick = {  },
             modifier = Modifier.align(Alignment.Center)
         ) {
             Text(
