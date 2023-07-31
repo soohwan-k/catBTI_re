@@ -7,6 +7,7 @@
     <string name="mbti_job_button">MBTI - 직업</string>
     <string name="mbti_bg_button">MBTI 밸런스 게임</string>
     <string name="test_button">검사하기</string>
+    <string name="complete_test_button">검사완료</string>
 
 
 </resources>
