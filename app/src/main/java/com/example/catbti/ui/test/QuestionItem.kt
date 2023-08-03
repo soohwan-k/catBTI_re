@@ -1,6 +1,5 @@
 package com.example.catbti.ui.test
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,6 +28,7 @@ fun QuestionItem(
     question: String,
     isSelectedItem: (String) -> Boolean,
     onChangeState: (String) -> Unit,
+    scoreMap: MutableMap<String, String>,
     modifier: Modifier = Modifier
 ) {
     val items = listOf("+3", "+2", "+1", "0", "-1", "-2", "-3")
@@ -59,12 +58,16 @@ fun QuestionItem(
                     modifier = Modifier
                         .selectable(
                             selected = isSelectedItem(item),
-                            onClick = { onChangeState(item) },
+                            onClick = {
+                                onChangeState(item)
+                                scoreMap[question] = item
+                            },
                             role = Role.RadioButton
                         )
                         .padding(4.dp)
 
                 ) {
+
                     RadioButton(
                         selected = isSelectedItem(item),
                         onClick = null
@@ -79,13 +82,14 @@ fun QuestionItem(
 }
 
 @Composable
-fun QuestionItem(question: String, modifier: Modifier = Modifier) {
+fun QuestionItem(question: String, scoreMap: MutableMap<String, String>,modifier: Modifier = Modifier) {
     val selectedValue = rememberSaveable { mutableStateOf("") }
 
     QuestionItem(
         question = question,
         isSelectedItem = { selectedValue.value == it },
         onChangeState = { selectedValue.value = it },
+        scoreMap = scoreMap,
         modifier = modifier
     )
 }
@@ -93,5 +97,5 @@ fun QuestionItem(question: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun QuestionPreview() {
-    QuestionItem(question = "질문입니다.")
+    //QuestionItem(question = "질문입니다.")
 }
