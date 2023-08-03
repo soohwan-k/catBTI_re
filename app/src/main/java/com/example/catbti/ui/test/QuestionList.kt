@@ -1,16 +1,18 @@
 package com.example.catbti.ui.test
 
 
-import androidx.compose.foundation.layout.Column
+import android.content.ContentValues.TAG
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,6 +29,8 @@ fun QuestionList(
     list: List<Question>,
     modifier: Modifier = Modifier
 ) {
+    val scoreMap = mutableMapOf<String, String>()
+    val context = LocalContext.current
     LazyColumn(
         modifier = modifier.padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -35,15 +39,25 @@ fun QuestionList(
             items = list,
             key = { question -> question.question }
         ) { question ->
-            QuestionItem(question = question.question)
+            QuestionItem(question = question.question, scoreMap = scoreMap)
         }
+
+
         item() {
-            BasicButton(text = stringResource(R.string.complete_test_button), textSize = 20, onClick = {})
+            BasicButton(
+                text = stringResource(R.string.complete_test_button),
+                textSize = 20,
+                onClick = {
+                    if (scoreMap.size < list.size) {
+                        Toast.makeText(context, "모든 설문에 응답하세요.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        completeTestButtonOnClick(scoreMap)
+                    }
+                })
         }
-
-
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
@@ -85,4 +99,15 @@ fun getQuestion(): List<Question> {
 
 
     return questionList
+}
+
+
+
+fun completeTestButtonOnClick(scoreMap: MutableMap<String, String>) {
+    var sum = 0
+    val questionList = getQuestion()
+    for (q in questionList) {
+        sum += scoreMap[q.question]!!.toInt()
+    }
+    Log.d(TAG, "completeTestButtonOnClick: $sum")
 }
