@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.example.catbti.Questions
 import com.example.catbti.R
 import com.example.catbti.data.test.Question
-import com.example.catbti.ui.main.MainButton
+import com.example.catbti.ui.main.BasicButton
 import com.example.catbti.ui.theme.Background
 import com.example.catbti.ui.theme.CatBTITheme
 
@@ -38,7 +38,7 @@ fun QuestionList(
             QuestionItem(question = question.question)
         }
         item() {
-            MainButton(text = stringResource(R.string.complete_test_button), textSize = 20)
+            BasicButton(text = stringResource(R.string.complete_test_button), textSize = 20, onClick = {})
         }
 
 
