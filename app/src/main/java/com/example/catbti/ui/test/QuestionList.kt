@@ -31,6 +31,7 @@ fun QuestionList(
 ) {
     val scoreMap = mutableMapOf<String, String>()
     val context = LocalContext.current
+    lateinit var mbti: String
     LazyColumn(
         modifier = modifier.padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -49,9 +50,13 @@ fun QuestionList(
                 textSize = 20,
                 onClick = {
                     if (scoreMap.size < list.size) {
-                        Toast.makeText(context, "모든 설문에 응답하세요.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.test_toast_message),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     } else {
-                        completeTestButtonOnClick(scoreMap)
+                        mbti = completeTestButtonOnClick(scoreMap)
                     }
                 })
         }
@@ -71,6 +76,37 @@ fun PPPairedListPreview() {
         }
 
     }
+}
+
+//mbti 알고리즘은 간단하게 구현
+fun completeTestButtonOnClick(scoreMap: MutableMap<String, String>): String {
+    var mbti = ""
+    var eiScore = 0
+    var nsScore = 0
+    var ftScore = 0
+    var pjScore = 0
+
+    val questionList = getQuestion()
+    for ((count, q) in questionList.withIndex()) {
+        if (count < 4) {
+            eiScore += scoreMap[q.question]!!.toInt()
+        } else if (count < 8) {
+            nsScore += scoreMap[q.question]!!.toInt()
+        } else if (count < 12) {
+            ftScore += scoreMap[q.question]!!.toInt()
+        } else {
+            pjScore += scoreMap[q.question]!!.toInt()
+        }
+    }
+
+    mbti += if (eiScore >= 0) "E" else "I"
+    mbti += if (nsScore >= 0) "N" else "S"
+    mbti += if (ftScore >= 0) "F" else "T"
+    mbti += if (pjScore >= 0) "P" else "J"
+
+    Log.d(TAG, "completeTestButtonOnClick: $mbti")
+    
+    return mbti
 }
 
 
@@ -101,13 +137,3 @@ fun getQuestion(): List<Question> {
     return questionList
 }
 
-
-
-fun completeTestButtonOnClick(scoreMap: MutableMap<String, String>) {
-    var sum = 0
-    val questionList = getQuestion()
-    for (q in questionList) {
-        sum += scoreMap[q.question]!!.toInt()
-    }
-    Log.d(TAG, "completeTestButtonOnClick: $sum")
-}
