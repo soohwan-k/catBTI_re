@@ -19,8 +19,12 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.catbti.ui.theme.Background
+import com.example.catbti.ui.theme.Dongle
 
 
 @Composable
@@ -47,7 +51,9 @@ fun QuestionItem(
             .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = question)
+        Text(text = question, fontFamily = Dongle, fontSize = 15.sp
+
+        )
         Spacer(modifier = Modifier.size(10.dp))
         Row(
             modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround
@@ -70,10 +76,11 @@ fun QuestionItem(
 
                     RadioButton(
                         selected = isSelectedItem(item),
-                        onClick = null
+                        onClick = null,
                     )
                     Text(
-                        text = item
+                        text = item,
+                        fontFamily = Dongle
                     )
                 }
             }

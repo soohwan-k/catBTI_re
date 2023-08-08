@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.catbti.R
+import com.example.catbti.ui.theme.Dongle
 
 @Composable
 fun TestButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
@@ -31,8 +32,8 @@ fun TestButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
             Text(
                 text = stringResource(R.string.test_button),
                 fontSize = 40.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                fontFamily = Dongle
             )
 
         }

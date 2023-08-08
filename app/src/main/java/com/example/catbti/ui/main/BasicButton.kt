@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.catbti.ui.theme.Background
+import com.example.catbti.ui.theme.Dongle
 
 @Composable
 fun BasicButton(text: String, textSize: Int, onClick: () -> Unit, modifier: Modifier = Modifier) {
@@ -24,7 +25,7 @@ fun BasicButton(text: String, textSize: Int, onClick: () -> Unit, modifier: Modi
             .padding(4.dp)
 
     ) {
-        Text(text = text, fontSize = textSize.sp, fontWeight = FontWeight.SemiBold)
+        Text(text = text, fontSize = textSize.sp, fontFamily = Dongle)
     }
 }
 
