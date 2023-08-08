@@ -10,6 +10,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,10 +32,16 @@ import com.example.catbti.ui.theme.CatBTITheme
 @Composable
 fun QuestionList(
     list: List<Question>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    val scoreMap = mutableMapOf<String, String>()
+    val scoreMap = rememberSaveable { mutableMapOf<String, String>() }
     val context = LocalContext.current
+    var dialogState by remember { mutableStateOf(false) }
+    var mbti by remember { mutableStateOf("") }
+    if (dialogState) {
+        MBTIDialog(onDismissRequest = {}, mbti = mbti, onClick = { dialogState = false })
+    }
+
     LazyColumn(
         modifier = modifier.padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -42,16 +53,21 @@ fun QuestionList(
             QuestionItem(question = question.question, scoreMap = scoreMap)
         }
 
-
         item() {
             BasicButton(
                 text = stringResource(R.string.complete_test_button),
                 textSize = 20,
                 onClick = {
                     if (scoreMap.size < list.size) {
-                        Toast.makeText(context, "모든 설문에 응답하세요.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.test_toast_message),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     } else {
-                        completeTestButtonOnClick(scoreMap)
+                        mbti = completeTestButtonOnClick(scoreMap)
+                        dialogState = true
+
                     }
                 })
         }
@@ -71,6 +87,37 @@ fun PPPairedListPreview() {
         }
 
     }
+}
+
+//mbti 알고리즘은 간단하게 구현
+fun completeTestButtonOnClick(scoreMap: MutableMap<String, String>): String {
+    var mbti = ""
+    var eiScore = 0
+    var nsScore = 0
+    var ftScore = 0
+    var pjScore = 0
+
+    val questionList = getQuestion()
+    for ((count, q) in questionList.withIndex()) {
+        if (count < 4) {
+            eiScore += scoreMap[q.question]!!.toInt()
+        } else if (count < 8) {
+            nsScore += scoreMap[q.question]!!.toInt()
+        } else if (count < 12) {
+            ftScore += scoreMap[q.question]!!.toInt()
+        } else {
+            pjScore += scoreMap[q.question]!!.toInt()
+        }
+    }
+
+    mbti += if (eiScore >= 0) "E" else "I"
+    mbti += if (nsScore >= 0) "N" else "S"
+    mbti += if (ftScore >= 0) "F" else "T"
+    mbti += if (pjScore >= 0) "P" else "J"
+
+    Log.d(TAG, "completeTestButtonOnClick: $mbti")
+
+    return mbti
 }
 
 
@@ -101,13 +148,3 @@ fun getQuestion(): List<Question> {
     return questionList
 }
 
-
-
-fun completeTestButtonOnClick(scoreMap: MutableMap<String, String>) {
-    var sum = 0
-    val questionList = getQuestion()
-    for (q in questionList) {
-        sum += scoreMap[q.question]!!.toInt()
-    }
-    Log.d(TAG, "completeTestButtonOnClick: $sum")
-}
