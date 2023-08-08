@@ -10,6 +10,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,11 +32,16 @@ import com.example.catbti.ui.theme.CatBTITheme
 @Composable
 fun QuestionList(
     list: List<Question>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    val scoreMap = mutableMapOf<String, String>()
+    val scoreMap = rememberSaveable { mutableMapOf<String, String>() }
     val context = LocalContext.current
-    lateinit var mbti: String
+    var dialogState by remember { mutableStateOf(false) }
+    var mbti by remember { mutableStateOf("") }
+    if (dialogState) {
+        MBTIDialog(onDismissRequest = {}, mbti = mbti, onClick = { dialogState = false })
+    }
+
     LazyColumn(
         modifier = modifier.padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -42,7 +52,6 @@ fun QuestionList(
         ) { question ->
             QuestionItem(question = question.question, scoreMap = scoreMap)
         }
-
 
         item() {
             BasicButton(
@@ -57,6 +66,8 @@ fun QuestionList(
                         ).show()
                     } else {
                         mbti = completeTestButtonOnClick(scoreMap)
+                        dialogState = true
+
                     }
                 })
         }
@@ -105,7 +116,7 @@ fun completeTestButtonOnClick(scoreMap: MutableMap<String, String>): String {
     mbti += if (pjScore >= 0) "P" else "J"
 
     Log.d(TAG, "completeTestButtonOnClick: $mbti")
-    
+
     return mbti
 }
 
